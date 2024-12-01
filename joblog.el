@@ -24,7 +24,7 @@
 
 (defcustom joblog-status-list
   '("Rejected" "Interviewed" "Accepted")
-  "List of job statuses."
+  "List of job status strings."
   :type '(repeat string))
 
 (defface joblog-company-face
