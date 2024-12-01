@@ -127,7 +127,7 @@ with arguments ARGS."
 	 (month (nth 0 date))
 	 (day   (nth 1 date)))
     (setq joblog--calendar-selection
-	  (format "%s-%s-%s" year month day)))
+	  (format "%04d-%02d-%02d" year month day)))
   (funcall fn args)
   (exit-recursive-edit))
 
