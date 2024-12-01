@@ -202,7 +202,6 @@ If SAVE is non-nil, save the buffer."
   (interactive (list t))
   (save-window-excursion
     (joblog-visit)
-    ;; [2024-11-30] TODO: This should add the status if it's missing
     (let ((status (joblog--prompt-status))
 	  (boundary (line-end-position)))
       (cond
