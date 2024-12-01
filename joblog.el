@@ -184,15 +184,16 @@ top of `joblog-file'."
   (interactive)
   (unless (and joblog-file (file-regular-p joblog-file))
     (user-error "Customize `joblog-file' first."))
-  (find-file joblog-file)
-  (goto-char (point-min))
-  (re-search-forward
-   (completing-read
-    "Entry: "
-    (joblog--completion-table
-     (joblog--entry-list (get-file-buffer joblog-file)))
-    nil t))
-  (beginning-of-line))
+  (let* ((buffer (find-file-noselect joblog-file))
+	 (choice (completing-read
+		 "Entry: "
+		 (joblog--completion-table
+		  (joblog--entry-list buffer))
+		 nil t)))
+    (switch-to-buffer buffer)
+    (goto-char (point-min))
+    (re-search-forward choice)
+    (beginning-of-line)))
 
 ;;;###autoload
 (defun joblog-change-status (&optional save)
