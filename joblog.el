@@ -82,6 +82,9 @@
     (cons joblog--location-regexp
 	  (quote joblog-location-face)))))
 
+(define-error 'joblog-empty-file
+	      "Create some entries first by calling `joblog'.")
+
 (defun joblog--history (regex buffer)
   "Return all occurences of REGEX in BUFFER.
 This is a generic function, callers should manually perform any
@@ -184,16 +187,21 @@ top of `joblog-file'."
   (interactive)
   (unless (and joblog-file (file-regular-p joblog-file))
     (user-error "Customize `joblog-file' first."))
-  (let* ((buffer (find-file-noselect joblog-file))
-	 (choice (completing-read
-		 "Entry: "
-		 (joblog--completion-table
-		  (joblog--entry-list buffer))
-		 nil t)))
-    (switch-to-buffer buffer)
-    (goto-char (point-min))
-    (re-search-forward choice)
-    (beginning-of-line)))
+  (condition-case err
+      (let* ((buffer (find-file-noselect joblog-file))
+	     (entries (or (joblog--entry-list buffer)
+			  (signal 'joblog-empty-file nil)))
+	     (choice (completing-read
+		      "Entry: "
+		      (joblog--completion-table entries)
+		      nil t)))
+	(switch-to-buffer buffer)
+	(goto-char (point-min))
+	(re-search-forward choice)
+	(beginning-of-line))
+    (joblog-empty-file
+     (user-error
+      (error-message-string err)))))
 
 ;;;###autoload
 (defun joblog-change-status (&optional save)
