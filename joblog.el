@@ -19,7 +19,8 @@
 	  (when (and joblog-file (file-exists-p joblog-file))
 	    (add-to-list 'auto-mode-alist
 			 (cons (file-name-nondirectory joblog-file)
-			       (quote joblog-mode))))))
+			       (quote joblog-mode))))
+	  val))
 
 (defcustom joblog-status-list
   '("Rejected" "Interviewed" "Accepted")
