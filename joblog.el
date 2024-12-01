@@ -151,11 +151,11 @@ Return the job status formatted to match `joblog--status-regexp'."
   (format "<%s>" (completing-read "Set status: " joblog-status-list)))
 
 (defun joblog--completion-table (completions)
+  "Return a completion table for COMPLETIONS."
   (lambda (string pred action)
     (if (eq action 'metadata)
 	`(metadata (display-sort-function . ,#'reverse))
       (complete-with-action action completions string pred))))
-
 
 ;;;###autoload
 (defun joblog ()
