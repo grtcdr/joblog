@@ -204,6 +204,7 @@ top of `joblog-file'."
 		      (joblog--completion-table entries)
 		      nil t)))
 	(switch-to-buffer buffer)
+	(joblog-mode)
 	(goto-char (point-min))
 	(re-search-forward choice)
 	(beginning-of-line))
