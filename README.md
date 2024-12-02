@@ -10,9 +10,9 @@ Ministry of Truth: Chief Editor (1984-11-01) <Rejected> -- Oceania
 Ministry of Peace: Lieutenant (1984-10-01) <Interviewed> -- Oceania
 ```
 
-> I have yet to hear back from the Ministry of Plenty...
-
 ![Emacs frame showing joblog selection menu on one side and the text format on the other](media/preview.webp)
+
+> I have yet to hear back from the Ministry of Plenty...
 
 # Installation
 
