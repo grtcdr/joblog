@@ -31,6 +31,8 @@ Call the interactive `joblog` function, it will prompt you to enter a few detail
 
 The information you enter will be saved to `joblog-file`. If you hear back from that company, call `joblog-change-status`, select the job from the list of candidates and set the new status from the list of `joblog-status-list`, you're free to add your own items to the list.
 
+The next time you use `joblog`, the `completing-read` interface will make suggestions based on the existing content of your `joblog-file` which could save you some typing time and keep your file consistent.
+
 You can use `joblog-visit` to jump into your `joblog-file` and makes changes directly, for example, to delete an item or change the job title. It's just text, just be careful to respect the rules of the file format, see Format section for more information.
 
 Type `M-x customize-group SPC joblog RET` to consult all of Joblog's customization options.
