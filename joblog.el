@@ -22,7 +22,7 @@
 	    (unless (file-exists-p val)
 	      (with-temp-buffer (write-file val)))
 	    (add-to-list 'auto-mode-alist
-			 (cons (file-name-nondirectory val)
+			 (cons (rx (eval (file-name-nondirectory val)) eos)
 			       (quote joblog-mode))))
 	  val))
 
