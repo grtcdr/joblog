@@ -181,8 +181,8 @@ top of `joblog-file'."
       (goto-char (point-min))
       (insert
        (format "%s: %s (%s)" company title date)
-       (when (string-empty-p location)
-	 (concat " -- " location))
+       (cond ((string-empty-p location) "")
+	     (t (concat " -- " location)))
        "\n")
       (save-buffer))))
 
