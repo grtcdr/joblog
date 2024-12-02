@@ -18,7 +18,9 @@
   :type 'file
   :set '(lambda (sym val)
 	  (set-default-toplevel-value sym val)
-	  (when (and val (file-exists-p val))
+	  (when val
+	    (unless (file-exists-p val)
+	      (with-temp-buffer (write-file val)))
 	    (add-to-list 'auto-mode-alist
 			 (cons (file-name-nondirectory val)
 			       (quote joblog-mode))))
