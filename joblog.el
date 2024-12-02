@@ -1,4 +1,8 @@
-;; joblog.el  -*- lexical-binding: t; -*-
+;;; joblog.el --- Job application logging utility -*- lexical-binding: t -*-
+
+;; Copyright (C) 2024 Taha Aziz Ben Ali <ba.tahaaziz@gmail.com>
+;; License: ISC - See LICENSE for legalese
+;; Version: 2024.12.02
 
 (require 'calendar)
 (eval-when-compile

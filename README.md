@@ -18,7 +18,7 @@ Joblog is not yet available in any package archive so you'll have to obtain it
 from source by evaluating the following:
 
 ``` emacs-lisp
-(package-vc-install "https://git.sr.ht/~grtcdr/joblog" "2024.12.04")
+(package-vc-install "https://git.sr.ht/~grtcdr/joblog" "2024.12.02")
 ```
 
 # Usage
