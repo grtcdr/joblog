@@ -25,7 +25,9 @@ from source by evaluating the following:
 
 # Usage
 
-Your `joblog-file` is your personal database. Once you've created an empty file for `joblog-file`, call the interactive `joblog` function, it will prompt you to enter a few details such as the company, the job title, the location and the date you applied for the position.
+Your `joblog-file` is your personal database, you can use `customize-file` to set it.
+
+Call the interactive `joblog` function, it will prompt you to enter a few details such as the company, the job title, the location and the date you applied for the position.
 
 The information you enter will be saved to `joblog-file`. If you hear back from that company, call `joblog-change-status`, select the job from the list of candidates and set the new status from the list of `joblog-status-list`, you're free to add your own items to the list.
 
