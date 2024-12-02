@@ -173,7 +173,11 @@ top of `joblog-file'."
 	 (date (joblog--read-date)))
     (with-current-buffer (find-file-noselect joblog-file)
       (goto-char (point-min))
-      (insert (format "%s: %s (%s) -- %s\n" company title date location))
+      (insert
+       (format "%s: %s (%s)" company title date)
+       (when (string-empty-p location)
+	 (concat " -- " location))
+       "\n")
       (save-buffer))))
 
 ;;;###autoload
