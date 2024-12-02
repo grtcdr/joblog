@@ -1,7 +1,5 @@
 ;; joblog.el  -*- lexical-binding: t; -*-
 
-;; Log job applications of companies you'll likely never hear from.
-
 (require 'calendar)
 (eval-when-compile
   (require 'rx))
