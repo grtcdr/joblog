@@ -54,7 +54,7 @@ Joblog's text-based nature opens the door to some interesting possibilities. For
 Here's an Emacs Lisp function that returns the rate of rejection of job applications:
 
 ``` emacs-lisp
-(defun joblog-rejection-rate ()
+(defun my-joblog-rejection-rate ()
   "Return the rate of rejection of job applications."
   (let* ((entries (joblog--entry-list (find-file-noselect joblog-file)))
 	 (rejected (seq-filter (lambda (s) (string-match-p "<Rejected>" s)) entries)))
@@ -62,6 +62,8 @@ Here's an Emacs Lisp function that returns the rate of rejection of job applicat
 ```
 
 You can achieve similar results with `grep`, `wc` and other standard utilities.
+
+Note that no such statistical functions are provided by the package, you are expected to write these yourself using the package's internal functions as illustrated in the previous example. Joblog is (and will likely remain) a tiny package making it possible to comprehend, modify and extend easily and quickly.
 
 # Support
 
