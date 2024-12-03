@@ -57,8 +57,10 @@ Here's an Emacs Lisp function that returns the rate of rejection of job applicat
 (defun my-joblog-rejection-rate ()
   "Return the rate of rejection of job applications."
   (let* ((entries (joblog--entry-list (find-file-noselect joblog-file)))
-	 (rejected (seq-filter (lambda (s) (string-match-p "<Rejected>" s)) entries)))
-    (format "%.2f%" (* 100 (/ (float (length rejected)) (float (length entries)))))))
+         (rejected (seq-filter (lambda (s) (string-match-p "<Rejected>" s)) entries))
+         (flength (lambda (list) (float (length list))))
+         (rate (* 100 (/ (flength rejected) (flength entries)))))
+    (format "%.2f%" rate)))
 ```
 
 You can achieve similar results with `grep`, `wc` and other standard utilities.
