@@ -67,7 +67,7 @@
   "Matches the name of a company.")
 
 (defconst joblog--date-regexp
-  (rx (and "(" (= 4 digit) "-" (= 2 digit) "-" (= 2 digit) ")"))
+  (rx (and "(" (group (= 4 digit) "-" (= 2 digit) "-" (= 2 digit)) ")"))
   "Matches the date of a log entry.")
 
 (defconst joblog--location-regexp
@@ -165,6 +165,15 @@ Return the job status formatted to match `joblog--status-regexp'."
 	`(metadata (display-sort-function . ,#'reverse))
       (complete-with-action action completions string pred))))
 
+(defun joblog--insert-entry (company title date location)
+  "Insert entry with COMPANY, TITLE, DATE and LOCATION information."
+  (beginning-of-line)
+  (insert
+   (format "%s: %s (%s)" company title date)
+   (cond ((string-empty-p location) "")
+	 (t (concat " -- " location)))
+   "\n"))
+
 ;;;###autoload
 (defun joblog ()
   "Prompt the user to log a job application.
@@ -177,14 +186,26 @@ top of `joblog-file'."
 	 (company (completing-read "Company: " company-history))
 	 (title (read-string "Job title: "))
 	 (location (completing-read "Location: " location-history))
+	 (today (format-time-string "%Y-%m-%d"))
 	 (date (joblog--read-date)))
     (with-current-buffer (find-file-noselect joblog-file)
-      (goto-char (point-min))
-      (insert
-       (format "%s: %s (%s)" company title date)
-       (cond ((string-empty-p location) "")
-	     (t (concat " -- " location)))
-       "\n")
+      (if (string-equal date today)
+	  (progn
+	    (goto-char (point-min))
+	    (joblog--insert-entry company title date location))
+	(with-current-buffer buffer
+	  (goto-char (point-min))
+	  (let ((found nil))
+	    (while (and (not found)
+			(re-search-forward joblog--date-regexp nil t))
+	      (let ((entry-date
+		     (buffer-substring-no-properties
+		      (match-beginning 1)
+		      (match-end 1))))
+		(when (string> date entry-date)
+		  (setq found t)
+		  (forward-line -1)
+		  (joblog--insert-entry company title date location)))))))
       (save-buffer))))
 
 ;;;###autoload
