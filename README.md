@@ -53,7 +53,7 @@ Joblog's text-based nature opens the door to some interesting possibilities. For
 
 Here's an Emacs Lisp function that returns the rate of rejection of job applications:
 
-```
+``` emacs-lisp
 (defun joblog-rejection-rate ()
   "Return the rate of rejection of job applications."
   (let* ((entries (joblog--entry-list (find-file-noselect joblog-file)))
