@@ -47,6 +47,22 @@ Notes:
 - Location is noted in brackets to show that it is an optional field, when location is specified in the `completing-read` interface or when manually inserted, the brackets should not be included.
 - Location can be used to insert the work modality, e.g. Remote, Hybrid, etc.
 
+# Paradigm
+
+Joblog's text-based nature opens the door to some interesting possibilities. For example, you can write Emacs Lisp functions or shell scripts that query your `joblog-file` for specific information and return pertinent statistics.
+
+Here's an Emacs Lisp function that returns the rate of rejection of job applications:
+
+```
+(defun joblog-rejection-rate ()
+  "Return the rate of rejection of job applications."
+  (let* ((entries (joblog--entry-list (find-file-noselect joblog-file)))
+	 (rejected (seq-filter (lambda (s) (string-match-p "<Rejected>" s)) entries)))
+    (format "%.2f%" (* 100 (/ (float (length rejected)) (float (length entries)))))))
+```
+
+You can achieve similar results with `grep`, `wc` and other standard utilities.
+
 # Support
 
 If you wish to contribute a patch, inquire about something or share your feedback, you are welcome to send an email to [~grtcdr/pub@lists.sr.ht](mailto:~grtcdr/pub@lists.sr.ht). If this is your first time collaborating over email, please check out [this guide](https://git-send-email.io/). If you encounter issues of any kind, please file them in the project's [ticket tracker][ticket-tracker].
