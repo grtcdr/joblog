@@ -93,8 +93,8 @@
   "Return all occurences of REGEX in BUFFER.
 This is a generic function, callers should manually perform any
 required string manipulation directl on the list."
-  (let ((companies nil)
-	(subexpression (or subexp 0)))
+  (let ((subexpression (or subexp 0))
+	(results nil))
     (save-excursion
       (with-current-buffer buffer
 	(goto-char (point-min))
@@ -103,8 +103,8 @@ required string manipulation directl on the list."
 	   (buffer-substring-no-properties
 	    (match-beginning subexpression)
 	    (match-end subexpression))
-	   companies))))
-    companies))
+	   results))))
+    (delete-dups results)))
 
 (defun joblog--entry-list (buffer)
   "Return a list of all entries in BUFFER."
