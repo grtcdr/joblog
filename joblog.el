@@ -63,7 +63,7 @@
   "Stores dates selected from the calendar.")
 
 (defconst joblog--company-regexp
-  (rx (one-or-more nonl) ":")
+  (rx (group (one-or-more nonl)) ":")
   "Matches the name of a company.")
 
 (defconst joblog--date-regexp
@@ -71,7 +71,7 @@
   "Matches the date of a log entry.")
 
 (defconst joblog--location-regexp
-  (rx (and "--" (one-or-more whitespace) (one-or-more nonl)))
+  (rx (and "--" (one-or-more whitespace) (group (one-or-more nonl))))
   "Matches the location.")
 
 (defconst joblog--font-lock-defaults
@@ -113,18 +113,12 @@ required string manipulation directl on the list."
 (defun joblog--company-list (buffer)
   "Return an list of all previously entered companies as symbols.
 BUFFER is the buffer to search through."
-  (mapcar
-   (lambda (s)
-     (substring s 0 (1- (length s))))
-   (joblog--history buffer joblog--company-regexp)))
+  (joblog--history buffer joblog--company-regexp 1))
 
 (defun joblog--location-list (buffer)
   "Return an list of all previously entered locations.
 BUFFER is the buffer to search through."
-  (mapcar
-   (lambda (s)
-     (string-trim (string-remove-prefix "--" s)))
-   (joblog--history buffer joblog--location-regexp)))
+  (joblog--history buffer joblog--location-regexp 1))
 
 (defun joblog--calendar-select (fn &rest args)
   "Copies calendar selection to joblog--calendar-selection.
