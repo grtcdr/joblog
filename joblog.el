@@ -104,7 +104,7 @@ required string manipulation directl on the list."
 	    (match-beginning subexpression)
 	    (match-end subexpression))
 	   results))))
-    (delete-dups results)))
+    results))
 
 (defun joblog--entry-list (buffer)
   "Return a list of all entries in BUFFER."
@@ -113,12 +113,12 @@ required string manipulation directl on the list."
 (defun joblog--company-list (buffer)
   "Return an list of all previously entered companies as symbols.
 BUFFER is the buffer to search through."
-  (joblog--history buffer joblog--company-regexp 1))
+  (delete-dups (joblog--history buffer joblog--company-regexp 1)))
 
 (defun joblog--location-list (buffer)
   "Return an list of all previously entered locations.
 BUFFER is the buffer to search through."
-  (joblog--history buffer joblog--location-regexp 1))
+  (delete-dups (joblog--history buffer joblog--location-regexp 1)))
 
 (defun joblog--calendar-select (fn &rest args)
   "Copies calendar selection to joblog--calendar-selection.
