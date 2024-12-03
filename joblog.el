@@ -89,25 +89,26 @@
 (define-error 'joblog-empty-file
 	      "Create some entries first by calling `joblog'.")
 
-(defun joblog--history (regex buffer)
+(defun joblog--history (buffer regex &optional subexp)
   "Return all occurences of REGEX in BUFFER.
 This is a generic function, callers should manually perform any
 required string manipulation directl on the list."
-  (let ((companies nil))
+  (let ((companies nil)
+	(subexpression (or subexp 0)))
     (save-excursion
       (with-current-buffer buffer
 	(goto-char (point-min))
 	(while (re-search-forward regex nil t)
 	  (push
 	   (buffer-substring-no-properties
-	    (match-beginning 0)
-	    (match-end 0))
+	    (match-beginning subexpression)
+	    (match-end subexpression))
 	   companies))))
     companies))
 
 (defun joblog--entry-list (buffer)
   "Return a list of all entries in BUFFER."
-  (joblog--history (rx (+ nonl)) buffer))
+  (joblog--history buffer (rx (+ nonl))))
 
 (defun joblog--company-list (buffer)
   "Return an list of all previously entered companies as symbols.
@@ -115,7 +116,7 @@ BUFFER is the buffer to search through."
   (mapcar
    (lambda (s)
      (substring s 0 (1- (length s))))
-   (joblog--history joblog--company-regexp buffer)))
+   (joblog--history buffer joblog--company-regexp)))
 
 (defun joblog--location-list (buffer)
   "Return an list of all previously entered locations.
@@ -123,7 +124,7 @@ BUFFER is the buffer to search through."
   (mapcar
    (lambda (s)
      (string-trim (string-remove-prefix "--" s)))
-   (joblog--history joblog--location-regexp buffer)))
+   (joblog--history buffer joblog--location-regexp)))
 
 (defun joblog--calendar-select (fn &rest args)
   "Copies calendar selection to joblog--calendar-selection.
