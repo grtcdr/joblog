@@ -81,7 +81,7 @@
 	  (quote joblog-company-face))
     (cons joblog--date-regexp
 	  (quote joblog-date-face))
-    (cons (rx (and "<" (any alpha) ">"))
+    (cons (rx (eval (joblog--status-regexp)))
 	  (quote joblog-status-face))
     (cons joblog--location-regexp
 	  (quote joblog-location-face)))))
