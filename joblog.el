@@ -74,6 +74,9 @@
   (rx (and "--" (one-or-more whitespace) (group (one-or-more nonl))))
   "Matches the location.")
 
+(defun joblog--status-regexp ()
+  (concat "<" (regexp-opt joblog-status-list) ">"))
+
 (defconst joblog--font-lock-defaults
   (list
    (list
@@ -81,7 +84,7 @@
 	  (quote joblog-company-face))
     (cons joblog--date-regexp
 	  (quote joblog-date-face))
-    (cons (rx (eval (joblog--status-regexp)))
+    (cons (rx (regexp (joblog--status-regexp)))
 	  (quote joblog-status-face))
     (cons joblog--location-regexp
 	  (quote joblog-location-face)))))
@@ -143,9 +146,6 @@ with arguments ARGS."
     (recursive-edit)
     (advice-remove 'calendar-exit 'joblog--calendar-select)
     joblog--calendar-selection))
-
-(defun joblog--status-regexp ()
-  (concat "<" (regexp-opt joblog-status-list) ">"))
 
 (defun joblog--prompt-status ()
   "Prompt the user for a job status.
