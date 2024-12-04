@@ -2,7 +2,7 @@ Joblog is an a major mode and `completing-read`-based interface for a textual fi
 
 If you're applying to a bunch of jobs on a bunch of different websites, it's very likely that you've run into the problem of staying sane as you attempt to keep a log of all your job applications.
 
-Joblog's format is chronologically ordered, simple to read and write and most importantly, future-proof.
+Joblog's format is chronologically-ordered, simple to read and write and most importantly, future-proof.
 
 ```
 Ministry of Plenty: Accountant (1984-12-01) -- Oceania
