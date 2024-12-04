@@ -1,4 +1,4 @@
-Joblog is a major mode and `completing-read`-based interface for a textual file format that you can use to log your job applications.
+Joblog is a major mode and `completing-read`-based interface for a plain text file format that you can use to log your job applications.
 
 If you're applying to a bunch of jobs on a bunch of different websites, it's very likely that you've run into the problem of staying sane as you attempt to keep a log of all your job applications.
 
