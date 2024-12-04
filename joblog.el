@@ -182,8 +182,8 @@ top of `joblog-file'."
 	 (company (completing-read "Company: " company-history))
 	 (title (read-string "Job title: "))
 	 (location (completing-read "Location: " location-history))
-	 (today (format-time-string "%Y-%m-%d"))
-	 (date (joblog--read-date)))
+	 (date (joblog--read-date))
+	 (today (format-time-string "%Y-%m-%d")))
     (with-current-buffer (find-file-noselect joblog-file)
       (if (string-equal date today)
 	  (progn
