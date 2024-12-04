@@ -63,7 +63,7 @@
   "Stores dates selected from the calendar.")
 
 (defconst joblog--company-regexp
-  (rx (group (one-or-more nonl)) ":")
+  (rx bol (group (one-or-more nonl)) ":")
   "Matches the name of a company.")
 
 (defconst joblog--date-regexp
