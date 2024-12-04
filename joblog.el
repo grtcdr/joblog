@@ -207,9 +207,6 @@ top of `joblog-file'."
 ;;;###autoload
 (defun joblog-visit ()
   "Prompt the user to visit an existing log entry."
-  ;; [2024-12-01] TODO: joblog-visit should allow users to filter
-  ;; candidates by their date, requires regexp logic to be refactored to
-  ;; utilize subgroups.
   (interactive)
   (unless (and joblog-file (file-regular-p joblog-file))
     (user-error "Customize `joblog-file' first."))
