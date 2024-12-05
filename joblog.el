@@ -13,6 +13,15 @@
   :prefix "joblog-"
   :group 'convenience)
 
+(defcustom joblog-status-list
+  '("Rejected" "Interviewed" "Accepted")
+  "List of job status strings."
+  :type '(repeat string))
+
+(defcustom joblog-mark-old-entries nil
+  "Marks old entries with an overlay."
+  :type 'boolean)
+
 (defcustom joblog-file nil
   "Filename containing a log of job applications."
   :type 'file
@@ -26,10 +35,53 @@
 			       (quote joblog-mode))))
 	  val))
 
-(defcustom joblog-status-list
-  '("Rejected" "Interviewed" "Accepted")
-  "List of job status strings."
-  :type '(repeat string))
+(defcustom joblog-recent-entry-interval 14
+  "Number of days below which a joblog entry is considered recent.
+This variable is used by `joblog-recent-entries' to limit
+completions to a subset that is the most recent.  This variable
+should only matter to you if you set `joblog-visit-predicate' to
+`joblog-recent-entries'."
+  :type 'integer)
+
+(defvar joblog--entry-overlay nil
+  "Stores the overlay that marks old entries.")
+
+(defvar joblog--calendar-selection nil
+  "Stores dates selected from the calendar.")
+
+(defconst joblog--company-regexp
+  (rx bol (group (one-or-more nonl)) ":")
+  "Matches the name of a company.")
+
+(defconst joblog--date-regexp
+  (rx (and "(" (group (= 4 digit) "-" (= 2 digit) "-" (= 2 digit)) ")"))
+  "Matches the date of a log entry.")
+
+(defconst joblog--location-regexp
+  (rx (and "--" (one-or-more whitespace) (group (one-or-more nonl))))
+  "Matches the location.")
+
+(defun joblog--status-regexp ()
+  (concat "<" (regexp-opt joblog-status-list) ">"))
+
+(defun joblog--day-difference (date)
+  "Return the difference between DATE and the current time.
+DATE is a valid IS 8601 date string."
+  (let ((unit (* 24 60 60))
+	(then (date-to-time date))
+	(now (encode-time (parse-time-string (current-time-string)))))
+    (/ (time-subtract now then)
+       unit)))
+
+(defun joblog-recent-entries (entries)
+  "Return ENTRIES no higher than `joblog-recent-entry-interval'."
+  (seq-filter
+   (lambda (entry)
+     (< (joblog--day-difference
+	 (progn (string-match joblog--date-regexp entry)
+		(match-string-no-properties 1 entry)))
+	joblog-recent-entry-interval))
+   entries))
 
 (defface joblog-company-face
   '((t (:inherit font-lock-builtin-face)))
@@ -58,24 +110,6 @@
   :group 'joblog)
 
 (defvar joblog-location-face 'joblog-location-face)
-
-(defvar joblog--calendar-selection nil
-  "Stores dates selected from the calendar.")
-
-(defconst joblog--company-regexp
-  (rx bol (group (one-or-more nonl)) ":")
-  "Matches the name of a company.")
-
-(defconst joblog--date-regexp
-  (rx (and "(" (group (= 4 digit) "-" (= 2 digit) "-" (= 2 digit)) ")"))
-  "Matches the date of a log entry.")
-
-(defconst joblog--location-regexp
-  (rx (and "--" (one-or-more whitespace) (group (one-or-more nonl))))
-  "Matches the location.")
-
-(defun joblog--status-regexp ()
-  (concat "<" (regexp-opt joblog-status-list) ">"))
 
 (defconst joblog--font-lock-defaults
   (list
@@ -255,11 +289,34 @@ If SAVE is non-nil, save the buffer."
 	(insert " " status))))
     (save-buffer save)))
 
+(defun joblog--old-entries-coordinates ()
+  (with-current-buffer (find-file-noselect joblog-file)
+    (let ((first-old-entry nil))
+      (while (and (not first-old-entry)
+		  (re-search-forward joblog--date-regexp nil t))
+	(when (> (joblog--day-difference
+		  (match-string-no-properties 1))
+		 joblog-recent-entry-interval)
+	  (setq first-old-entry (line-beginning-position))))
+      (cons first-old-entry (point-max)))))
+
+(defun joblog--make-entry-overlay ()
+  "Creates an overlay that clearly marks old entries."
+  (when joblog-mark-old-entries
+    (let* ((coordinates (joblog--old-entries-coordinates))
+	   (start (car coordinates))
+	   (end (cdr coordinates))
+	   (buffer (find-file-noselect joblog-file)))
+      (when (bufferp buffer)
+	(setq joblog--entry-overlay (make-overlay start end buffer))
+	(overlay-put joblog--entry-overlay 'face 'shadow)))))
+
 ;;;###autoload
 (define-derived-mode
   joblog-mode
   fundamental-mode
   "Joblog"
-  (setq font-lock-defaults joblog--font-lock-defaults))
+  (setq font-lock-defaults joblog--font-lock-defaults)
+  (joblog--make-entry-overlay))
 
 (provide 'joblog)
