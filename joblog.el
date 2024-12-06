@@ -93,16 +93,14 @@ should only matter to you if you set `joblog-visit-predicate' to
 (defvar joblog-location-face 'joblog-location-face)
 
 (defconst joblog--font-lock-defaults
-  (list
-   (list
-    (cons joblog--company-regexp
-	  (quote joblog-company-face))
-    (cons joblog--date-regexp
-	  (quote joblog-date-face))
-    (cons (rx (regexp (joblog--status-regexp)))
-	  (quote joblog-status-face))
-    (cons joblog--location-regexp
-	  (quote joblog-location-face)))))
+  (list (list (cons joblog--company-regexp
+		    joblog-company-face)
+	      (cons joblog--date-regexp
+		    joblog-date-face)
+	      (cons (rx (regexp (joblog--status-regexp)))
+		    joblog-status-face)
+	      (cons joblog--location-regexp
+		    joblog-location-face))))
 
 (defun joblog--day-difference (date)
   "Return the difference between DATE and the current time.
