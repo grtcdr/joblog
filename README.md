@@ -41,11 +41,13 @@ Type `M-x customize-group SPC joblog RET` to consult all of Joblog's customizati
 
 ```
 COMPANY: JOB TITLE (YYYY-MM-DD) [-- LOCATION]
+# Comments looks like this.
 ```
 
 Notes:
 - Location is noted in brackets to show that it is an optional field, when location is specified in the `completing-read` interface or when manually inserted, the brackets should not be included.
 - Location can be used to insert the work modality, e.g. Remote, Hybrid, etc.
+- Comments can occupy one or more lines and they must not occupy the same line as a log entry.
 
 # Paradigm
 

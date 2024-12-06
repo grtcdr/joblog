@@ -58,7 +58,7 @@ should only matter to you if you set `joblog-visit-predicate' to
   "Matches the date of a log entry.")
 
 (defconst joblog--location-regexp
-  (rx (and "--" (one-or-more whitespace) (group (one-or-more nonl))))
+  (rx (and "--" (one-or-more whitespace) (group (one-or-more nonl)) (or "#" eos)))
   "Matches the location.")
 
 (defun joblog--status-regexp ()
@@ -93,14 +93,17 @@ should only matter to you if you set `joblog-visit-predicate' to
 (defvar joblog-location-face 'joblog-location-face)
 
 (defconst joblog--font-lock-defaults
-  (list (list (cons joblog--company-regexp
+  (list (list (cons (rx "#" (zero-or-more nonl) eol)
+		    font-lock-comment-face)
+	      (cons joblog--company-regexp
 		    joblog-company-face)
 	      (cons joblog--date-regexp
 		    joblog-date-face)
 	      (cons (rx (regexp (joblog--status-regexp)))
 		    joblog-status-face)
 	      (cons joblog--location-regexp
-		    joblog-location-face))))
+		    joblog-location-face)))
+  "Specifies the fontification properties of `joblog-mode'.")
 
 (defun joblog--day-difference (date)
   "Return the difference between DATE and the current time.
@@ -122,7 +125,7 @@ DATE is a valid IS 8601 date string."
    entries))
 
 (define-error 'joblog-empty-file
-	      "Create some entries first using the `joblog' command.")
+	      "Create some entries first with \\[joblog].")
 
 (defun joblog--history (buffer regex &optional subexp)
   "Return all occurences of REGEX in BUFFER.
@@ -143,7 +146,9 @@ required string manipulation directl on the list."
 
 (defun joblog--entry-list (buffer)
   "Return a list of all entries in BUFFER."
-  (joblog--history buffer (rx (+ nonl))))
+  (joblog--history buffer
+		   (rx bol (and (not "#")
+				(+ nonl)) eol)))
 
 (defun joblog--company-list (buffer)
   "Return an list of all previously entered companies as symbols.
@@ -318,6 +323,10 @@ If SAVE is non-nil, save the buffer."
   fundamental-mode
   "Joblog"
   (setq font-lock-defaults joblog--font-lock-defaults)
+  (setq-local comment-start "#")
+  (setq-local comment-start-skip
+	      (rx (one-or-more "#")
+		  (zero-or-more space)))
   (joblog--make-entry-overlay))
 
 (provide 'joblog)
