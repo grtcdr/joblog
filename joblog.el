@@ -64,25 +64,6 @@ should only matter to you if you set `joblog-visit-predicate' to
 (defun joblog--status-regexp ()
   (concat "<" (regexp-opt joblog-status-list) ">"))
 
-(defun joblog--day-difference (date)
-  "Return the difference between DATE and the current time.
-DATE is a valid IS 8601 date string."
-  (let ((unit (* 24 60 60))
-	(then (date-to-time date))
-	(now (encode-time (parse-time-string (current-time-string)))))
-    (/ (time-subtract now then)
-       unit)))
-
-(defun joblog-recent-entries (entries)
-  "Return ENTRIES no higher than `joblog-recent-entry-interval'."
-  (seq-filter
-   (lambda (entry)
-     (< (joblog--day-difference
-	 (progn (string-match joblog--date-regexp entry)
-		(match-string-no-properties 1 entry)))
-	joblog-recent-entry-interval))
-   entries))
-
 (defface joblog-company-face
   '((t (:inherit font-lock-builtin-face)))
   "Face for company names."
@@ -123,8 +104,27 @@ DATE is a valid IS 8601 date string."
     (cons joblog--location-regexp
 	  (quote joblog-location-face)))))
 
+(defun joblog--day-difference (date)
+  "Return the difference between DATE and the current time.
+DATE is a valid IS 8601 date string."
+  (let ((unit (* 24 60 60))
+	(then (date-to-time date))
+	(now (encode-time (parse-time-string (current-time-string)))))
+    (/ (time-subtract now then)
+       unit)))
+
+(defun joblog-recent-entries (entries)
+  "Return ENTRIES no higher than `joblog-recent-entry-interval'."
+  (seq-filter
+   (lambda (entry)
+     (< (joblog--day-difference
+	 (progn (string-match joblog--date-regexp entry)
+		(match-string-no-properties 1 entry)))
+	joblog-recent-entry-interval))
+   entries))
+
 (define-error 'joblog-empty-file
-	      "Create some entries first by calling `joblog'.")
+	      "Create some entries first using the `joblog' command.")
 
 (defun joblog--history (buffer regex &optional subexp)
   "Return all occurences of REGEX in BUFFER.
@@ -289,8 +289,9 @@ If SAVE is non-nil, save the buffer."
 	(insert " " status))))
     (save-buffer save)))
 
-(defun joblog--old-entries-coordinates ()
-  (with-current-buffer (find-file-noselect joblog-file)
+(defun joblog--locate-old-entries (buffer)
+  "Return the first and last position of old entries in BUFFER."
+  (with-current-buffer buffer
     (let ((first-old-entry nil))
       (while (and (not first-old-entry)
 		  (re-search-forward joblog--date-regexp nil t))
@@ -301,13 +302,15 @@ If SAVE is non-nil, save the buffer."
       (cons first-old-entry (point-max)))))
 
 (defun joblog--make-entry-overlay ()
-  "Creates an overlay that clearly marks old entries."
-  (when joblog-mark-old-entries
-    (let* ((coordinates (joblog--old-entries-coordinates))
+  "Creates an overlay which marks any old entries."
+  (save-excursion
+    (save-window-excursion
+      (when-let*
+	  ((joblog-mark-old-entries)
+	   (buffer (find-file joblog-file))
+	   (coordinates (joblog--locate-old-entries buffer))
 	   (start (car coordinates))
-	   (end (cdr coordinates))
-	   (buffer (find-file-noselect joblog-file)))
-      (when (bufferp buffer)
+	   (end (cdr coordinates)))
 	(setq joblog--entry-overlay (make-overlay start end buffer))
 	(overlay-put joblog--entry-overlay 'face 'shadow)))))
 
