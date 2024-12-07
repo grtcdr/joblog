@@ -35,7 +35,7 @@
 			       (quote joblog-mode))))
 	  val))
 
-(defcustom joblog-recent-entry-interval 14
+(defcustom joblog-recent-entry-interval 21
   "Number of days below which a joblog entry is considered recent.
 This variable is used by `joblog-recent-entries' to limit
 completions to a subset that is the most recent.  This variable
