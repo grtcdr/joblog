@@ -60,8 +60,6 @@ should only matter to you if you set `joblog-visit-predicate' to
 (defconst joblog--location-regexp
   (rx (and "--"
 	   (group (one-or-more nonl))
-	   (? (one-or-more whitespace)
-	      "#" (one-or-more nonl))
 	   eol))
   "Matches the location of a job.")
 
@@ -329,9 +327,7 @@ If SAVE is non-nil, save the buffer."
   "Joblog"
   (setq font-lock-defaults joblog--font-lock-defaults)
   (setq-local comment-start "#")
-  (setq-local comment-start-skip
-	      (rx (one-or-more "#")
-		  (zero-or-more space)))
+  (setq-local comment-use-syntax nil)
   (joblog--make-entry-overlay))
 
 (provide 'joblog)
