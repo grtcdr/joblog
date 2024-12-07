@@ -321,10 +321,7 @@ If SAVE is non-nil, save the buffer."
 	(overlay-put joblog--entry-overlay 'face 'shadow)))))
 
 ;;;###autoload
-(define-derived-mode
-  joblog-mode
-  fundamental-mode
-  "Joblog"
+(define-derived-mode joblog-mode fundamental-mode "Joblog"
   (setq font-lock-defaults joblog--font-lock-defaults)
   (setq-local comment-start "#")
   (setq-local comment-use-syntax nil)
