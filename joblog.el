@@ -103,9 +103,9 @@ should only matter to you if you set `joblog-visit-predicate' to
 	      (cons joblog--date-regexp
 		    'joblog-date-face)
 	      (cons joblog--status-regexp
-		    'joblog-status-face)
+		    joblog-status-face)
 	      (cons joblog--location-regexp
-		    'joblog-location-face)))
+		    (list 1 joblog-location-face))))
   "Specifies the fontification properties of `joblog-mode'.")
 
 (defun joblog--day-difference (date)
