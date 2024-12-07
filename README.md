@@ -40,14 +40,14 @@ Type `M-x customize-group SPC joblog RET` to consult all of Joblog's customizati
 # Format
 
 ```
-COMPANY: JOB TITLE (YYYY-MM-DD) <STATUS> [-- LOCATION]
+COMPANY: JOB TITLE (YYYY-MM-DD) [<STATUS> -- LOCATION]
 # Comments looks like this.
 ```
 
 Notes:
-- Location is noted in brackets to show that it is an optional field, when location is specified in the `completing-read` interface or when manually inserted, the brackets should not be included.
-- Location can be used to insert the work modality, e.g. Remote, Hybrid, etc.
-- Comments can occupy one or more lines and they must not occupy the same line as a log entry.
+- Status and location are noted in brackets to show that they are optional fields. When either of the fields is specified in the `completing-read` interface or during manual insertion, the brackets *must* not be included.
+- Location can be used to insert the work modality, for example: remote, hybrid, etc.
+- Comments can occupy one or more lines but they *should* not occupy the same line as a log entry, the reason is that font lock will break, but besides that, nothing stops you from doing this.
 
 # Paradigm
 
@@ -63,7 +63,7 @@ Here's an Emacs Lisp function that returns the rate of rejection of job applicat
          (flength (lambda (list) (float (length list))))
          (rate (* 100.0 (/ (funcall flength rejected)
                            (funcall flength entries)))))
-    (format "%.2f%%" rate)))
+    (message (format "%.2f%%" rate))))
 ```
 
 You can achieve similar results with `grep`, `wc` and other standard utilities.
