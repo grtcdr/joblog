@@ -58,11 +58,16 @@ should only matter to you if you set `joblog-visit-predicate' to
   "Matches the date of a log entry.")
 
 (defconst joblog--location-regexp
-  (rx (and "--" (one-or-more whitespace) (group (one-or-more nonl)) (or "#" eos)))
-  "Matches the location.")
+  (rx (and "--"
+	   (group (one-or-more nonl))
+	   (? (one-or-more whitespace)
+	      "#" (one-or-more nonl))
+	   eol))
+  "Matches the location of a job.")
 
-(defun joblog--status-regexp ()
-  (concat "<" (regexp-opt joblog-status-list) ">"))
+(defconst joblog--status-regexp
+  (rx "<" (group (one-or-more nonl)) ">")
+  "Matches the status of a job application.")
 
 (defface joblog-company-face
   '((t (:inherit font-lock-builtin-face)))
@@ -94,15 +99,15 @@ should only matter to you if you set `joblog-visit-predicate' to
 
 (defconst joblog--font-lock-defaults
   (list (list (cons (rx "#" (zero-or-more nonl) eol)
-		    font-lock-comment-face)
+		    'font-lock-comment-face)
 	      (cons joblog--company-regexp
-		    joblog-company-face)
+		    'joblog-company-face)
 	      (cons joblog--date-regexp
-		    joblog-date-face)
-	      (cons (rx (regexp (joblog--status-regexp)))
-		    joblog-status-face)
+		    'joblog-date-face)
+	      (cons joblog--status-regexp
+		    'joblog-status-face)
 	      (cons joblog--location-regexp
-		    joblog-location-face)))
+		    'joblog-location-face)))
   "Specifies the fontification properties of `joblog-mode'.")
 
 (defun joblog--day-difference (date)
@@ -276,7 +281,7 @@ If SAVE is non-nil, save the buffer."
       (cond
        ;; Status is already set, replace with new status
        ((number-or-marker-p
-	 (re-search-forward (joblog--status-regexp) boundary t))
+	 (re-search-forward joblog--status-regexp boundary t))
 	(replace-match status))
        ;; No previous status, determine where to insert based on
        ;; location field
