@@ -40,7 +40,7 @@ Type `M-x customize-group SPC joblog RET` to consult all of Joblog's customizati
 # Format
 
 ```
-COMPANY: JOB TITLE (YYYY-MM-DD) [-- LOCATION]
+COMPANY: JOB TITLE (YYYY-MM-DD) <STATUS> [-- LOCATION]
 # Comments looks like this.
 ```
 
