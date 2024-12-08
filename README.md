@@ -39,7 +39,7 @@ You can use `joblog-visit` to jump into your `joblog-file` and makes changes dir
 
 ```
 COMPANY: JOB TITLE (YYYY-MM-DD) [<STATUS> -- LOCATION]
-# Comments looks like this.
+# This is a comment :)
 ```
 
 Notes:
