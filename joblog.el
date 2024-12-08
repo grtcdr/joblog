@@ -258,22 +258,21 @@ top of `joblog-file'."
     (with-current-buffer buffer
       (goto-char (point-min))
       (if (string-equal date today)
-	  (progn
-	    (goto-char (point-min))
-	    (joblog--insert-entry company title date location))
-	(with-current-buffer buffer
-	  (goto-char (point-min))
-	  (let ((found nil))
-	    (while (and (not found)
-			(re-search-forward joblog--date-regexp nil t))
-	      (let ((entry-date
-		     (buffer-substring-no-properties
-		      (match-beginning 1)
-		      (match-end 1))))
-		(when (string> date entry-date)
-		  (setq found t)
-		  (forward-line -1)
-		  (joblog--insert-entry company title date location)))))))
+	  (joblog--insert-entry company title date location)
+	(let ((found nil))
+	  (while (and (not found)
+		      (re-search-forward joblog--date-regexp nil t))
+	    (let ((entry-date
+		   (buffer-substring-no-properties
+		    (match-beginning 1)
+		    (match-end 1))))
+	      (unless (string< date entry-date)
+		(setq found t)
+		(joblog--insert-entry company title date location))))
+	  (when (not found)
+	    (forward-line)
+	    (joblog--insert-entry company title date location)))
+	(joblog--make-entry-overlay :update))
       (save-buffer))))
 
 ;;;###autoload
