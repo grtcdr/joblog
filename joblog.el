@@ -2,7 +2,7 @@
 
 ;; Copyright (C) 2024 Taha Aziz Ben Ali <ba.tahaaziz@gmail.com>
 ;; License: ISC - See LICENSE for legalese
-;; Version: 2024.12.03
+;; Version: 2024_12_08.c311e1a
 
 (require 'calendar)
 (eval-when-compile
