@@ -211,6 +211,36 @@ chronological ordering of COMPLETIONS."
 	 (t (concat " -- " location)))
    "\n"))
 
+
+(defun joblog--locate-old-entries (buffer)
+  "Return the first and last position of old entries in BUFFER."
+  (save-excursion
+    (save-window-excursion
+      (with-current-buffer buffer
+	(goto-char (point-min))
+	(let ((first-old-entry nil))
+	  (while (and (not first-old-entry)
+		      (re-search-forward joblog--date-regexp nil t))
+	    (when (> (joblog--day-difference
+		      (match-string-no-properties 1))
+		     joblog-recent-entry-interval)
+	      (setq first-old-entry (line-beginning-position))))
+	  (cons first-old-entry (point-max)))))))
+
+(defun joblog--make-entry-overlay (&optional update)
+  "Creates an overlay which marks any old entries.
+If UPDATE is non-nil, the overlay is updated instead."
+  (when-let*
+      ((joblog-mark-old-entries)
+       (buffer (find-file-noselect joblog-file))
+       (coordinates (joblog--locate-old-entries buffer))
+       (start (car coordinates))
+       (end (cdr coordinates)))
+    (if update
+	(move-overlay joblog--entry-overlay start end buffer)
+      (setq joblog--entry-overlay (make-overlay start end buffer))
+      (overlay-put joblog--entry-overlay 'face 'shadow))))
+
 ;;;###autoload
 (defun joblog ()
   "Prompt the user to log a job application.
@@ -295,31 +325,6 @@ If SAVE is non-nil, save the buffer."
 	(goto-char (match-end 0))
 	(insert " " status))))
     (save-buffer save)))
-
-(defun joblog--locate-old-entries (buffer)
-  "Return the first and last position of old entries in BUFFER."
-  (with-current-buffer buffer
-    (let ((first-old-entry nil))
-      (while (and (not first-old-entry)
-		  (re-search-forward joblog--date-regexp nil t))
-	(when (> (joblog--day-difference
-		  (match-string-no-properties 1))
-		 joblog-recent-entry-interval)
-	  (setq first-old-entry (line-beginning-position))))
-      (cons first-old-entry (point-max)))))
-
-(defun joblog--make-entry-overlay ()
-  "Creates an overlay which marks any old entries."
-  (save-excursion
-    (save-window-excursion
-      (when-let*
-	  ((joblog-mark-old-entries)
-	   (buffer (find-file joblog-file))
-	   (coordinates (joblog--locate-old-entries buffer))
-	   (start (car coordinates))
-	   (end (cdr coordinates)))
-	(setq joblog--entry-overlay (make-overlay start end buffer))
-	(overlay-put joblog--entry-overlay 'face 'shadow)))))
 
 ;;;###autoload
 (define-derived-mode joblog-mode fundamental-mode "Joblog"
