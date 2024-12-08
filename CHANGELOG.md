@@ -1,7 +1,7 @@
 # `2024_12_08.db5b033`
 
-- Added support for overlays and a new variable `joblog-mark-old-entries` used to toggle this feature
-- Fixed edge case handling for inserting entries with older dates
+- Add overlay feature to shadow older entries and a new variable `joblog-mark-old-entries` used to toggle the feature
+- Fix edge case handling for inserting entries with older dates
 - Fix the parser to correctly highlight the status element
 
 # `2024_12_04.7839ec7`
