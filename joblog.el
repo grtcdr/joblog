@@ -59,6 +59,7 @@ should only matter to you if you set `joblog-visit-predicate' to
 
 (defconst joblog--location-regexp
   (rx (and "--"
+	   (one-or-more space)
 	   (group (one-or-more nonl))
 	   eol))
   "Matches the location of a job.")
