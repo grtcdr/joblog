@@ -255,7 +255,8 @@ top of `joblog-file'."
 	 (location (completing-read "Location: " location-history))
 	 (date (joblog--read-date))
 	 (today (format-time-string "%Y-%m-%d")))
-    (with-current-buffer (find-file-noselect joblog-file)
+    (with-current-buffer buffer
+      (goto-char (point-min))
       (if (string-equal date today)
 	  (progn
 	    (goto-char (point-min))
