@@ -155,7 +155,7 @@ required string manipulation directl on the list."
 				(+ nonl)) eol)))
 
 (defun joblog--company-list (buffer)
-  "Return an list of all previously entered companies as symbols.
+  "Return an list of all previously entered companies.
 BUFFER is the buffer to search through."
   (delete-dups (joblog--history buffer joblog--company-regexp 1)))
 
